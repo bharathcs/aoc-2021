@@ -8,6 +8,8 @@ main = do
   
   print "Part One: "
   print $ getRightBoard boards (0:drawnNums)
+  print "Part Two: "
+  print $ getWrongBoard boards (0:drawnNums)
 
 -- Utils
 
@@ -59,3 +61,13 @@ getRightBoard boards nums = if not (null winningBoard)
     nextNum = head $ tail nums
 
 -- Part 2
+
+getWrongBoard :: [Board] -> DrawnNumbers -> Int
+getWrongBoard boards nums = if isLastBoardCompleted 
+  then sumBoard (head boards) * currNum
+  else getWrongBoard (map (markDone nextNum) nextBoards) (tail nums)
+  where
+    isLastBoardCompleted = length boards == 1 && checkDone (head boards)
+    nextBoards = filter (not . checkDone) boards
+    currNum = head nums
+    nextNum = head $ tail nums
