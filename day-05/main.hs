@@ -9,6 +9,7 @@ main = do
     fileContents <- readFile "input.txt"
     let points = parse fileContents
     print $ length $ analyse points
+    -- set handleDiagonals _ = [] to get answer for part 1
 
 -- Utils
 
@@ -40,7 +41,8 @@ getPointsFromLine ((a, b), (c, d))
     | a == c && b == d = [(a, b)]
     | a == c && b + 1 <= d = (a, b) : getPointsFromLine ((a, b + 1), (c, d))
     | b == d && a + 1 <= c = (a, b) : getPointsFromLine ((a + 1, b), (c, d))
-    | otherwise = []
+    | otherwise = handleDiagonals ((a, b), (c, d)) -- Not a vertical or horizontal line
+-- for part 1, handleDiagonals should return [].
 
 getAllPointsFromLines :: [Line] -> [Point]
 getAllPointsFromLines = concatMap getPointsFromLine
@@ -49,3 +51,14 @@ analyse :: [Line] -> [Point]
 analyse arr = Map.keys mapOfDangerousPoints
     where   m = storeMap $ getAllPointsFromLines arr
             mapOfDangerousPoints = Map.filter (>= 2) m
+
+-- Part Two
+
+handleDiagonals :: Line -> [Point]
+-- handleDiagonals _ = [] -- Uncomment this line & Remove the declaration below to get Part One answer.
+handleDiagonals ((a, b), (c, d))
+    | a > c = handleDiagonals ((c, d), (a, b))
+    | a == c && b == d = [(a, b)]
+    | (a + 1 <= c) && (b + 1 <= d) = (a, b) : handleDiagonals ((a + 1, b + 1), (c, d))
+    | (a + 1 <= c) && (b - 1 >= d) = (a, b) : handleDiagonals ((a + 1, b - 1), (c, d))
+    | otherwise = error $ "Not a horizontal, vertical or diagonal line: " ++ unwords (map show [a, b, c, d])
