@@ -5,6 +5,7 @@
 are difficult.
 
 Use `<-` to handle IO monads and 'take' something out. Need to learn more about errors & exceptions...
+Something to do with `>>=`.
 
 ## `null` Quirks
 
